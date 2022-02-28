@@ -6,7 +6,7 @@ import { DownloadOutlined } from "@ant-design/icons";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import Feed from "./components/Feed/Feed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logout from "./components/Logout/Logout";
 
 function App() {
@@ -34,6 +34,16 @@ function App() {
   };
   const count = 6;
   const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
+  useEffect(() => {
+    fetch(fakeDataUrl)
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        setList(res.results);
+        console.log(list);
+      });
+  }, []);
   const onGetData = () => {
     fetch(fakeDataUrl)
       .then((res) => {
@@ -65,7 +75,7 @@ function App() {
       )}
       {!login && !isAuth && <Register />}
       {!isAuth && <Switch defaultChecked onChange={onChange} />}
-      {feed && <Feed data={list} />}
+      {feed && <Feed data={list} token={token} />}
 
       {feed && (
         <Button
