@@ -38,13 +38,13 @@ const Login = (props) => {
           console.log(token, userId);
           props.onSuccesfulLogin(true);
           props.onChangeToken(token);
+          props.onChangeFeed(true);
+          props.onGetData();
         }
       })
       .catch((err) => {
         console.log(err);
       });
-
-    // console.log("Received values of form: ", values);
   };
 
   return (
