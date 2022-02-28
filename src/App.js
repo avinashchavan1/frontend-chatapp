@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+// import logo from "./logo.svg";
+import "./App.css";
+import { Switch } from "antd";
+
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
+import { useState } from "react";
 
 function App() {
+  // const state = {
+  //   isLogin: true,
+  //   isRegister: true,
+  // };
+
+  const [login, setLogin] = useState(false);
+  const [isAuth, setIsAuth] = useState(false);
+  const [token, setToken] = useState("");
+  const [feed, setFeed] = useState(false);
+  function onChange(checked) {
+    console.log(`switch to ${checked}`);
+    setLogin(!login);
+  }
+  const onChangeIsAuth = (authStatus) => {
+    setIsAuth(authStatus);
+  };
+  const onChangeToken = (token) => {
+    setToken(token);
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {login && !isAuth && (
+        <Login
+          onSuccesfulLogin={onChangeIsAuth}
+          onChangeToken={onChangeToken}
+        />
+      )}
+      {!login && !isAuth && <Register />}
+      {!isAuth && <Switch defaultChecked onChange={onChange} />}
     </div>
   );
 }
