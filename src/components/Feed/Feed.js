@@ -4,13 +4,30 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import { List, Avatar, Button, Skeleton } from "antd";
-import { DeleteFilled, EditFilled, DownloadOutlined } from "@ant-design/icons";
+
+import { gql, useMutation } from "@apollo/client";
+
+import {
+  DeleteFilled,
+  EditFilled,
+  DownloadOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
+import NewPost from "../NewPost/NewPost";
 
 const Feed = (props) => {
-  //   console.log("Props", props.data);
-  //   const [list, setlist] = useState(props.data);
   const [posts, setPosts] = useState([]);
-  //   const list = props.data;
+  const [modal, setModal] = useState(false);
+
+  const graphqlQuery = gql`
+    mutation AddPost($id: ID!) {
+      deletePost(id: $id)
+    }
+  `;
+
+  const [deletePost, { data, loading, error, called }] =
+    useMutation(graphqlQuery);
+
   const randColor = () => {
     return (
       "#" +
@@ -48,20 +65,34 @@ const Feed = (props) => {
         return res.json();
       })
       .then((res) => {
-        console.log(res.data.posts);
-        setPosts(res.data.posts);
+        let posts = res.data.posts.reverse();
+        posts = posts.map((post) => {
+          return { ...post, color: randColor() };
+        });
+        console.log(posts);
+        setPosts(posts);
+        // setPosts(res.data.posts.reverse());
       })
       .catch((err) => console.log(err));
   };
 
   useEffect(loadPosts, []);
 
-  const deletePost = (item) => {
+  const onDeletePost = (item) => {
     console.log(item);
     console.log(posts);
-    const filtered = posts.filter((data) => data.id !== item.id);
-    console.log(filtered);
-    setPosts(filtered);
+
+    const id = item.id;
+    deletePost({ variables: { id: id } })
+      .then((res) => {
+        console.log(res);
+        if (res.data.deletePost) {
+          const filtered = posts.filter((data) => data.id !== item.id);
+          console.log(filtered);
+          setPosts(filtered);
+        }
+      })
+      .catch((err) => console.log(err));
   };
   const addPost = () => {
     const post = {
@@ -77,8 +108,14 @@ const Feed = (props) => {
     let newPosts = [post, ...posts];
     setPosts(newPosts);
   };
+
+  const updatePostOnChange = (post) => {
+    setPosts((prevState) => [post, ...prevState]);
+  };
+
   return (
     <div className="feed-componet">
+      {<NewPost updatePostOnChange={updatePostOnChange} />}
       <List
         className="demo-loadmore-list"
         itemLayout="horizontal"
@@ -88,14 +125,14 @@ const Feed = (props) => {
             actions={[
               <Button
                 type="dashed"
-                onClick={() => addPost()}
+                // onClick={() => addPost()}
                 icon={<EditFilled />}
               >
                 Edit
               </Button>,
               <Button
                 type="dashed"
-                onClick={() => deletePost(item)}
+                onClick={() => onDeletePost(item)}
                 danger
                 icon={<DeleteFilled />}
               >
@@ -109,7 +146,7 @@ const Feed = (props) => {
                   <Avatar
                     size={40}
                     style={{
-                      backgroundColor: randColor(),
+                      backgroundColor: item.color,
                     }}
                   >
                     {item.content[0] + item.content[2]}
@@ -123,7 +160,7 @@ const Feed = (props) => {
         )}
       />
       <Button
-        type="primary"
+        type="dashed"
         shape="round"
         // onClick={onGetData}
         icon={<DownloadOutlined />}

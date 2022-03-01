@@ -8,6 +8,40 @@ import Register from "./components/Register/Register";
 import Feed from "./components/Feed/Feed";
 import { useEffect, useState } from "react";
 import Logout from "./components/Logout/Logout";
+import { createHttpLink } from "apollo-link-http";
+import { setContext } from "apollo-link-context";
+
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql,
+} from "@apollo/client";
+
+const httpLink = createHttpLink({
+  uri: "http://localhost:4000/graphql",
+});
+
+const token = localStorage.getItem("token");
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem("token");
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+
+  uri: "http://localhost:4000/graphql",
+  cache: new InMemoryCache(),
+});
 
 function App() {
   const [login, setLogin] = useState(true); // if user should login or register
@@ -32,31 +66,9 @@ function App() {
   const onChangeList = (list) => {
     setList([]);
   };
-  // const count = 6;
-  // const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-  // useEffect(() => {
-  //   fetch(fakeDataUrl)
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then((res) => {
-  //       setList(res.results);
-  //       console.log(list);
-  //     });
-  // }, []);
-  // const onGetData = () => {
-  //   fetch(fakeDataUrl)
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then((res) => {
-  //       setList(res.results);
-  //       console.log(list);
-  //     });
-  // };
 
   return (
-    <div className="App">
+    <ApolloProvider client={client}>
       {isAuth && (
         <Logout
           onChangeIsAuth={onChangeIsAuth}
@@ -76,7 +88,7 @@ function App() {
       {!login && !isAuth && <Register />}
       {!isAuth && <Switch defaultChecked onChange={onChange} />}
       {feed && <Feed data={list} token={token} />}
-    </div>
+    </ApolloProvider>
   );
 }
 
