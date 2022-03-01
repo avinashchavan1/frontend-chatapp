@@ -32,28 +32,28 @@ function App() {
   const onChangeList = (list) => {
     setList([]);
   };
-  const count = 6;
-  const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-  useEffect(() => {
-    fetch(fakeDataUrl)
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setList(res.results);
-        console.log(list);
-      });
-  }, []);
-  const onGetData = () => {
-    fetch(fakeDataUrl)
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setList(res.results);
-        console.log(list);
-      });
-  };
+  // const count = 6;
+  // const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
+  // useEffect(() => {
+  //   fetch(fakeDataUrl)
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((res) => {
+  //       setList(res.results);
+  //       console.log(list);
+  //     });
+  // }, []);
+  // const onGetData = () => {
+  //   fetch(fakeDataUrl)
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((res) => {
+  //       setList(res.results);
+  //       console.log(list);
+  //     });
+  // };
 
   return (
     <div className="App">
@@ -70,23 +70,12 @@ function App() {
           onSuccesfulLogin={onChangeIsAuth}
           onChangeToken={onChangeToken}
           onChangeFeed={onChangeFeed}
-          onGetData={onGetData}
+          // onGetData={onGetData}
         />
       )}
       {!login && !isAuth && <Register />}
       {!isAuth && <Switch defaultChecked onChange={onChange} />}
       {feed && <Feed data={list} token={token} />}
-
-      {feed && (
-        <Button
-          type="primary"
-          shape="round"
-          onClick={onGetData}
-          icon={<DownloadOutlined />}
-        >
-          Change Data
-        </Button>
-      )}
     </div>
   );
 }

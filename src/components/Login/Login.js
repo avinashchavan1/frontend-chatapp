@@ -39,7 +39,7 @@ const Login = (props) => {
           props.onSuccesfulLogin(true);
           props.onChangeToken(token);
           props.onChangeFeed(true);
-          props.onGetData();
+          //   props.onGetData();
         }
       })
       .catch((err) => {

@@ -4,10 +4,13 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import { List, Avatar, Button, Skeleton } from "antd";
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
+import { DeleteFilled, EditFilled, DownloadOutlined } from "@ant-design/icons";
 
 const Feed = (props) => {
-  const list = props.data;
+  //   console.log("Props", props.data);
+  //   const [list, setlist] = useState(props.data);
+  const [posts, setPosts] = useState([]);
+  //   const list = props.data;
   const randColor = () => {
     return (
       "#" +
@@ -45,49 +48,90 @@ const Feed = (props) => {
         return res.json();
       })
       .then((res) => {
-        console.log(res);
+        console.log(res.data.posts);
+        setPosts(res.data.posts);
       })
       .catch((err) => console.log(err));
   };
 
   useEffect(loadPosts, []);
+
+  const deletePost = (item) => {
+    console.log(item);
+    console.log(posts);
+    const filtered = posts.filter((data) => data.id !== item.id);
+    console.log(filtered);
+    setPosts(filtered);
+  };
+  const addPost = () => {
+    const post = {
+      id: "13",
+      content:
+        "This is a new PosThis is a new PosThis is a new PosThis is a new PosThis is a new Post",
+      title: "1 This is Post",
+      imageUrl: "Ha this is the link",
+      creator: "3",
+      createdAt: "2022-03-01T05:15:31.084Z",
+      updatedAt: "2022-03-01T05:15:31.084Z",
+    };
+    let newPosts = [post, ...posts];
+    setPosts(newPosts);
+  };
   return (
-    <List
-      className="demo-loadmore-list"
-      itemLayout="horizontal"
-      dataSource={list}
-      renderItem={(item) => (
-        <List.Item
-          actions={[
-            <Button type="dashed" icon={<EditFilled />}>
-              Edit
-            </Button>,
-            <Button type="dashed" danger icon={<DeleteFilled />}>
-              Delete
-            </Button>,
-          ]}
-        >
-          <Skeleton avatar title={false} loading={item.loading} active>
-            <List.Item.Meta
-              avatar={
-                <Avatar
-                  size={40}
-                  style={{
-                    backgroundColor: randColor(),
-                  }}
-                >
-                  {item.name.first[0] + item.name.last[0]}
-                </Avatar>
-              }
-              title={<a href="https://ant.design">{item.name.last}</a>}
-              description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-            />
-          </Skeleton>
-        </List.Item>
-      )}
-    />
+    <div className="feed-componet">
+      <List
+        className="demo-loadmore-list"
+        itemLayout="horizontal"
+        dataSource={posts}
+        renderItem={(item) => (
+          <List.Item
+            actions={[
+              <Button
+                type="dashed"
+                onClick={() => addPost()}
+                icon={<EditFilled />}
+              >
+                Edit
+              </Button>,
+              <Button
+                type="dashed"
+                onClick={() => deletePost(item)}
+                danger
+                icon={<DeleteFilled />}
+              >
+                Delete
+              </Button>,
+            ]}
+          >
+            <Skeleton avatar title={false} loading={item.loading} active>
+              <List.Item.Meta
+                avatar={
+                  <Avatar
+                    size={40}
+                    style={{
+                      backgroundColor: randColor(),
+                    }}
+                  >
+                    {item.content[0] + item.content[2]}
+                  </Avatar>
+                }
+                title={<a href="https://ant.design">{item.title}</a>}
+                description={item.content}
+              />
+            </Skeleton>
+          </List.Item>
+        )}
+      />
+      <Button
+        type="primary"
+        shape="round"
+        // onClick={onGetData}
+        icon={<DownloadOutlined />}
+      >
+        Change Data
+      </Button>
+    </div>
   );
-  //   return <h1>From Feed</h1>;
 };
 
 export default Feed;
