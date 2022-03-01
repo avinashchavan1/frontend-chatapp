@@ -14,10 +14,12 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import NewPost from "../NewPost/NewPost";
+import EditPost from "../EditPost/EditPost";
 
 const Feed = (props) => {
   const [posts, setPosts] = useState([]);
-  const [modal, setModal] = useState(false);
+  const [editmodal, setEditModal] = useState(false);
+  const [editItem, setEditItem] = useState({});
 
   const graphqlQuery = gql`
     mutation AddPost($id: ID!) {
@@ -49,6 +51,7 @@ const Feed = (props) => {
                 creator
                 createdAt
                 updatedAt
+                creatorName
               }
         }
         `,
@@ -94,28 +97,41 @@ const Feed = (props) => {
       })
       .catch((err) => console.log(err));
   };
-  const addPost = () => {
-    const post = {
-      id: "13",
-      content:
-        "This is a new PosThis is a new PosThis is a new PosThis is a new PosThis is a new Post",
-      title: "1 This is Post",
-      imageUrl: "Ha this is the link",
-      creator: "3",
-      createdAt: "2022-03-01T05:15:31.084Z",
-      updatedAt: "2022-03-01T05:15:31.084Z",
-    };
-    let newPosts = [post, ...posts];
-    setPosts(newPosts);
+  const OnEditPost = (item) => {
+    setEditModal((prevEditModal) => !prevEditModal);
+    // console.log(item);
+    setEditItem(item);
   };
 
   const updatePostOnChange = (post) => {
     setPosts((prevState) => [post, ...prevState]);
   };
 
+  const SplitName = (name) => {
+    let splits = name.split(" ");
+    if (splits.length > 1) {
+      return splits[0][0] + splits[1][0];
+    } else if (splits.length === 1) {
+      return splits[0][0] + splits[0][1];
+    } else {
+      return "NN";
+    }
+  };
+  const updatePostOnEdit = (post) => {
+    let index = posts.findIndex((currPost) => post.id === currPost.id);
+    console.log(post);
+    console.log(posts);
+    let tempPosts = [...posts];
+    tempPosts[index] = post;
+    setPosts(tempPosts);
+    console.log(index);
+  };
   return (
     <div className="feed-componet">
       {<NewPost updatePostOnChange={updatePostOnChange} />}
+      {editmodal && (
+        <EditPost updatePostOnEdit={updatePostOnEdit} item={editItem} />
+      )}
       <List
         className="demo-loadmore-list"
         itemLayout="horizontal"
@@ -125,7 +141,7 @@ const Feed = (props) => {
             actions={[
               <Button
                 type="dashed"
-                // onClick={() => addPost()}
+                onClick={() => OnEditPost(item)}
                 icon={<EditFilled />}
               >
                 Edit
@@ -149,24 +165,24 @@ const Feed = (props) => {
                       backgroundColor: item.color,
                     }}
                   >
-                    {item.content[0] + item.content[2]}
+                    {SplitName(item.creatorName)}
                   </Avatar>
                 }
-                title={<a href="https://ant.design">{item.title}</a>}
+                title={item.title}
                 description={item.content}
               />
             </Skeleton>
           </List.Item>
         )}
       />
-      <Button
+      {/* <Button
         type="dashed"
         shape="round"
         // onClick={onGetData}
         icon={<DownloadOutlined />}
       >
         Change Data
-      </Button>
+      </Button> */}
     </div>
   );
 };
