@@ -67,7 +67,11 @@ const EditForm = (props) => {
         props.toggleModal();
         message.success({ content: "Post Updated!", key });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        const messageText = err.message;
+        message.warning({ content: messageText, key });
+      });
   };
 
   //props.updatePostOnChange(post);

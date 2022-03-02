@@ -26,7 +26,9 @@ const Login = (props) => {
       })
       .then((result) => {
         if (result.errors) {
-          console.log(result.errors[0].message);
+          message.warning({ content: result.errors[0].message, key });
+
+          // console.log(result.errors[0].message);
         } else {
           message.success({ content: "Logged in!", key });
 
@@ -47,10 +49,16 @@ const Login = (props) => {
         }
       })
       .catch((err) => {
+        const messageText = err.message;
+        message.warning({ content: messageText, key });
+
         console.log(err);
       });
   };
 
+  const changeToRegister = () => {
+    props.onChangelogin(false);
+  };
   return (
     <Form
       name="normal_login"
@@ -96,6 +104,12 @@ const Login = (props) => {
         </Button>
         {/* Or <a href="">register now!</a> */}
       </Form.Item>
+      <p
+        onClick={changeToRegister}
+        style={{ color: "#1890ff", cursor: "pointer" }}
+      >
+        Not Registered? Register Now!
+      </p>
     </Form>
   );
 };

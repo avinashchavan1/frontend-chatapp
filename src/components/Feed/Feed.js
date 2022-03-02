@@ -99,7 +99,11 @@ const Feed = (props) => {
           setPosts(filtered);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        const messageText = err.message;
+        message.warning({ content: messageText, key });
+      });
   };
   const OnEditPost = (item) => {
     setEditModal((prevEditModal) => !prevEditModal);

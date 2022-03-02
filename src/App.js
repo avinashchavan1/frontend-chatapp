@@ -72,6 +72,9 @@ function App() {
   const onChangeIsAuth = (authStatus) => {
     setIsAuth(authStatus);
   };
+  const onChangelogin = (login) => {
+    setLogin(login);
+  };
   const onChangeToken = (token) => {
     setToken(token);
   };
@@ -93,16 +96,32 @@ function App() {
           onChangeList={onChangeList}
         />
       )}
+      {/* {!isAuth && (
+        <Switch
+          unCheckedChildren="Login"
+          checkedChildren="Register"
+          defaultChecked
+          onChange={onChange}
+        />
+      )} */}
       {login && !isAuth && (
         <Login
           onSuccesfulLogin={onChangeIsAuth}
           onChangeToken={onChangeToken}
           onChangeFeed={onChangeFeed}
           // onGetData={onGetData}
+          onChangelogin={onChangelogin}
         />
       )}
-      {!login && !isAuth && <Register />}
-      {!isAuth && <Switch defaultChecked onChange={onChange} />}
+      {!login && !isAuth && (
+        <Register
+          onChangelogin={onChangelogin}
+          onChangeIsAuth={onChangeIsAuth}
+          onChangeToken={onChangeToken}
+          onChangeFeed={onChangeFeed}
+        />
+      )}
+
       {feed && <Feed data={list} token={token} />}
     </ApolloProvider>
   );
