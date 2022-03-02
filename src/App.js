@@ -49,6 +49,22 @@ function App() {
   const [token, setToken] = useState(""); // current token
   const [feed, setFeed] = useState(false); // enable the feed
   const [list, setList] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const expiryDate = localStorage.getItem("expiryDate");
+    // const userId = localStorage.getItem("userId");
+    const newDate = new Date(Date.parse(expiryDate));
+    // newDate.addDays(4);
+    const currDate = new Date();
+    if (currDate < newDate) {
+      console.log("Im");
+      setIsAuth(true);
+      setFeed(true);
+      setToken(token);
+    }
+  }, []);
+
   function onChange(checked) {
     console.log(`switch to ${checked}`);
     setLogin(!login);
@@ -86,7 +102,7 @@ function App() {
         />
       )}
       {!login && !isAuth && <Register />}
-      {!isAuth && <Switch defaultChecked onChange={onChange} />}
+      {/* {!isAuth && <Switch defaultChecked onChange={onChange} />} */}
       {feed && <Feed data={list} token={token} />}
     </ApolloProvider>
   );

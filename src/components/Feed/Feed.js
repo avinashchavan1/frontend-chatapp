@@ -3,9 +3,9 @@ import "./Feed.css";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
-import { List, Avatar, Button, Skeleton } from "antd";
+import { List, Avatar, Button, Skeleton, Divider } from "antd";
 
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 import {
   DeleteFilled,
@@ -20,7 +20,7 @@ const Feed = (props) => {
   const [posts, setPosts] = useState([]);
   const [editmodal, setEditModal] = useState(false);
   const [editItem, setEditItem] = useState({});
-
+  const [currUser, setCurrUser] = useState("");
   const graphqlQuery = gql`
     mutation AddPost($id: ID!) {
       deletePost(id: $id)
@@ -29,7 +29,6 @@ const Feed = (props) => {
 
   const [deletePost, { data, loading, error, called }] =
     useMutation(graphqlQuery);
-
   const randColor = () => {
     return (
       "#" +
@@ -127,13 +126,15 @@ const Feed = (props) => {
     console.log(index);
   };
   return (
-    <div className="feed-componet">
+    <div className="feed-componet" id="feed_component">
       {<NewPost updatePostOnChange={updatePostOnChange} />}
       {editmodal && (
         <EditPost updatePostOnEdit={updatePostOnEdit} item={editItem} />
       )}
+      <Divider dashed></Divider>
       <List
         className="demo-loadmore-list"
+        id="demo_loadmore_list"
         itemLayout="horizontal"
         dataSource={posts}
         renderItem={(item) => (

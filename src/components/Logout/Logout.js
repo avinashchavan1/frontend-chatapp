@@ -1,8 +1,27 @@
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Avatar } from "antd";
 import { UserOutlined, PoweroffOutlined } from "@ant-design/icons";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import "./Logout.css";
+import { useEffect, useState } from "react";
 
 const Logout = (props) => {
+  const [user, setUser] = useState("");
+  const graphqlQueryUser = gql`
+    query User {
+      user {
+        name
+      }
+    }
+  `;
+  let dataUser;
+  const [Getuser, {}] = useLazyQuery(graphqlQueryUser);
+  useEffect(() => {
+    Getuser()
+      .then((res) => setUser(res.data.user.name))
+      .catch((err) => console.log(err));
+  }, []);
+
+  console.log(dataUser);
   const onLogout = () => {
     props.onChangeIsAuth(false);
     props.onChangeToken("");
@@ -13,9 +32,16 @@ const Logout = (props) => {
     localStorage.removeItem("userId");
   };
   return (
-    <Button type="primary" icon={<PoweroffOutlined />} onClick={onLogout}>
-      Log out
-    </Button>
+    <div id="logout">
+      {/* <Avatar >USER</Avatar> */}
+      {user}.
+      <Button
+        type="link"
+        icon={<PoweroffOutlined />}
+        onClick={onLogout}
+        danger
+      ></Button>
+    </div>
   );
 };
 

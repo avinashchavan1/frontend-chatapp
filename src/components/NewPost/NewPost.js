@@ -18,7 +18,7 @@ const NewPost = (props) => {
     setVisible((prevState) => !prevState);
   };
   return (
-    <>
+    <div id="new_post">
       <Button
         type="dashed"
         shape="round"
@@ -45,7 +45,7 @@ const NewPost = (props) => {
           toggleModal={toggleModal}
         />
       </Modal>
-    </>
+    </div>
   );
 };
 

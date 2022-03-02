@@ -4,3 +4,7 @@
   margin-left: auto;
   margin-right: auto;
 }
+#demo_loadmore_list {
+  margin: auto;
+  padding-top: 5vh;
+}
