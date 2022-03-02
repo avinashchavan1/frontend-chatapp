@@ -3,7 +3,7 @@ import "./Feed.css";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
-import { List, Avatar, Button, Skeleton, Divider } from "antd";
+import { List, Avatar, Button, Skeleton, Divider, message } from "antd";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
 
@@ -81,12 +81,17 @@ const Feed = (props) => {
   useEffect(loadPosts, []);
 
   const onDeletePost = (item) => {
+    const key = "updatable";
+    message.loading({ content: "Deleting Post...", key });
+
     console.log(item);
     console.log(posts);
 
     const id = item.id;
     deletePost({ variables: { id: id } })
       .then((res) => {
+        message.success({ content: "Post Deleted!", key });
+
         console.log(res);
         if (res.data.deletePost) {
           const filtered = posts.filter((data) => data.id !== item.id);

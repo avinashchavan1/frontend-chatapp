@@ -1,4 +1,4 @@
-import { Form, Input, Button, Avatar } from "antd";
+import { Form, Input, Button, Avatar, message } from "antd";
 import { UserOutlined, PoweroffOutlined } from "@ant-design/icons";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import "./Logout.css";
@@ -30,6 +30,7 @@ const Logout = (props) => {
     localStorage.removeItem("token");
     localStorage.removeItem("expiryDate");
     localStorage.removeItem("userId");
+    message.success({ content: "Logged out" });
   };
   return (
     <div id="logout">

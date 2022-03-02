@@ -102,7 +102,7 @@ function App() {
         />
       )}
       {!login && !isAuth && <Register />}
-      {/* {!isAuth && <Switch defaultChecked onChange={onChange} />} */}
+      {!isAuth && <Switch defaultChecked onChange={onChange} />}
       {feed && <Feed data={list} token={token} />}
     </ApolloProvider>
   );

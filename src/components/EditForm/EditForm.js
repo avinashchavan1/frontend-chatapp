@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import "./EditForm.css";
-import { Form, Input, InputNumber, Button } from "antd";
+import { Form, Input, InputNumber, Button, message } from "antd";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 
 const randColor = () => {
@@ -38,6 +38,9 @@ const EditForm = (props) => {
     useMutation(graphqlQuery);
 
   const onFinish = (values) => {
+    const key = "updatable";
+    message.loading({ content: "Loading...", key });
+
     let title = values.title;
     let content = values.content;
 
@@ -62,6 +65,7 @@ const EditForm = (props) => {
         console.log(post);
         props.updatePostOnEdit(post);
         props.toggleModal();
+        message.success({ content: "Post Updated!", key });
       })
       .catch((err) => console.log(err));
   };

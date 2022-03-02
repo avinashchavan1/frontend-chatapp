@@ -1,9 +1,11 @@
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "./Login.css";
 
 const Login = (props) => {
   const onFinish = (values) => {
+    const key = "updatable";
+    message.loading({ content: "Logging you in...", key });
     const graphqlQuery = {
       query: `{
           login(email:"${values.userEmail}",password:"${values.password}"){
@@ -26,6 +28,8 @@ const Login = (props) => {
         if (result.errors) {
           console.log(result.errors[0].message);
         } else {
+          message.success({ content: "Logged in!", key });
+
           const token = result.data.login.token;
           const userId = result.data.login.userId;
           localStorage.setItem("token", token);

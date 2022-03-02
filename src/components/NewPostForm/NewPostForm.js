@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import "./NewPostForm.css";
-import { Form, Input, InputNumber, Button } from "antd";
+import { Form, Input, InputNumber, Button, message } from "antd";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 const randColor = () => {
   return (
@@ -32,6 +32,9 @@ const NewPostForm = (props) => {
 
   const [addPost, { data, loading, error, called }] = useMutation(graphqlQuery);
   const onFinish = (values) => {
+    const key = "updatable";
+    message.loading({ content: "Creating Post...", key });
+
     console.log(values);
     const title = values.title;
     const content = values.content;
@@ -58,7 +61,7 @@ const NewPostForm = (props) => {
         post = { ...post, color: randColor() };
         console.log(post);
         props.updatePostOnChange(post);
-
+        message.success({ content: "Post Created!", key });
         props.toggleModal();
       })
       .catch((err) => console.log(err));
