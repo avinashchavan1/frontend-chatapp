@@ -3,8 +3,11 @@ import { UserOutlined, PoweroffOutlined } from "@ant-design/icons";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import "./Logout.css";
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 const Logout = (props) => {
+  const history = useHistory();
+
   const [user, setUser] = useState("");
   const graphqlQueryUser = gql`
     query User {
@@ -31,6 +34,7 @@ const Logout = (props) => {
     localStorage.removeItem("expiryDate");
     localStorage.removeItem("userId");
     message.success({ content: "Logged out" });
+    history.push("/login");
   };
   return (
     <div id="logout">

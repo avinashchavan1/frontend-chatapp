@@ -2,8 +2,11 @@ import { Form, Input, Button, message, Breadcrumb } from "antd";
 import { UserOutlined, LockOutlined, UserAddOutlined } from "@ant-design/icons";
 import "./Register.css";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useHistory } from "react-router-dom";
 
 const Register = (props) => {
+  const history = useHistory();
+
   const graphqlQuery = gql`
     mutation AddUser($userData: UserInputData!) {
       addUser(userData: $userData) {
@@ -38,6 +41,7 @@ const Register = (props) => {
         props.onChangeIsAuth(false);
         props.onChangeToken("");
         // props.onChangeFeed([]);
+        history.push("/login");
       })
       .catch((err) => {
         const messageText = err.message;
@@ -47,6 +51,7 @@ const Register = (props) => {
 
   const changeToLogin = () => {
     props.onChangelogin(true);
+    history.push("/login");
   };
   return (
     <div>

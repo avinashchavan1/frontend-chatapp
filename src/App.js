@@ -2,7 +2,7 @@
 import "./App.css";
 import { Switch, Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
-
+import { Route } from "react-router-dom";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import Feed from "./components/Feed/Feed";
@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Logout from "./components/Logout/Logout";
 import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
+import { useHistory } from "react-router-dom";
 
 import {
   ApolloClient,
@@ -18,6 +19,7 @@ import {
   useQuery,
   gql,
 } from "@apollo/client";
+import { Redirect } from "react-router-dom";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:4000/graphql",
@@ -44,6 +46,8 @@ const client = new ApolloClient({
 });
 
 function App() {
+  const history = useHistory();
+
   const [login, setLogin] = useState(true); // if user should login or register
   const [isAuth, setIsAuth] = useState(false); // to check if user is authenticated
   const [token, setToken] = useState(""); // current token
@@ -62,6 +66,7 @@ function App() {
       setIsAuth(true);
       setFeed(true);
       setToken(token);
+      history.push("/feed");
     }
   }, []);
 
@@ -88,23 +93,10 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      {isAuth && (
-        <Logout
-          onChangeIsAuth={onChangeIsAuth}
-          onChangeToken={onChangeToken}
-          onChangeFeed={onChangeFeed}
-          onChangeList={onChangeList}
-        />
-      )}
-      {/* {!isAuth && (
-        <Switch
-          unCheckedChildren="Login"
-          checkedChildren="Register"
-          defaultChecked
-          onChange={onChange}
-        />
-      )} */}
-      {login && !isAuth && (
+      <Route path="/" exact>
+        <Redirect to="/login"></Redirect>
+      </Route>
+      <Route path="/login">
         <Login
           onSuccesfulLogin={onChangeIsAuth}
           onChangeToken={onChangeToken}
@@ -112,17 +104,26 @@ function App() {
           // onGetData={onGetData}
           onChangelogin={onChangelogin}
         />
-      )}
-      {!login && !isAuth && (
+      </Route>
+      <Route path="/register">
         <Register
           onChangelogin={onChangelogin}
           onChangeIsAuth={onChangeIsAuth}
           onChangeToken={onChangeToken}
           onChangeFeed={onChangeFeed}
         />
-      )}
-
-      {feed && <Feed data={list} token={token} />}
+      </Route>
+      <Route path="/feed">
+        {isAuth && (
+          <Logout
+            onChangeIsAuth={onChangeIsAuth}
+            onChangeToken={onChangeToken}
+            onChangeFeed={onChangeFeed}
+            onChangeList={onChangeList}
+          />
+        )}
+        {isAuth && <Feed data={list} token={token} />}
+      </Route>
     </ApolloProvider>
   );
 }

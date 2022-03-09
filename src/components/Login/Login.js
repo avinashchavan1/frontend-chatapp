@@ -1,8 +1,11 @@
 import { Form, Input, Button, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import "./Login.css";
+import { useHistory } from "react-router-dom";
 
 const Login = (props) => {
+  const history = useHistory();
+
   const onFinish = (values) => {
     const key = "updatable";
     message.loading({ content: "Logging you in...", key });
@@ -45,7 +48,9 @@ const Login = (props) => {
           props.onSuccesfulLogin(true);
           props.onChangeToken(token);
           props.onChangeFeed(true);
+          //<Redirect to="/login"></Redirect>
           //   props.onGetData();
+          history.push("/feed");
         }
       })
       .catch((err) => {
@@ -58,6 +63,7 @@ const Login = (props) => {
 
   const changeToRegister = () => {
     props.onChangelogin(false);
+    history.push("/register");
   };
   return (
     <Form
